@@ -1,30 +1,11 @@
-import React, { Suspense, Fragment } from "react";
+import React from "react";
 
-const infiniteThenable = { then() {} };
+const OffscreenType = Symbol.for('react.offscreen');
 
-function Suspender({
-  freeze,
-  children,
-}: {
-  freeze: boolean;
-  children: React.ReactNode;
-}) {
-  if (freeze) {
-    throw infiniteThenable;
-  }
-  return <Fragment>{children}</Fragment>;
-}
-
-interface Props {
-  freeze: boolean;
-  children: React.ReactNode;
-  placeholder?: React.ReactNode;
-}
-
-export function Freeze({ freeze, children, placeholder = null }: Props) {
-  return (
-    <Suspense fallback={placeholder}>
-      <Suspender freeze={freeze}>{children}</Suspender>
-    </Suspense>
+export function Freeze({ freeze, children }) {
+  return React.createElement(
+    OffscreenType,
+    { mode: freeze ? 'hidden' : 'visible' },
+    children,
   );
 }
